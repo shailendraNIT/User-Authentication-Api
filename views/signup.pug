@@ -1,0 +1,23 @@
+extends layout
+
+block content
+    form(action="", method="post")
+        legend Register
+        .form-group
+            label(for="email")Email
+            input.form-control(type="text",name='eamil')
+            
+        .form-group
+            label(for="username")Username
+            input.form-control(type="text",name='username',autofocus)
+        .form-group
+            label(for="password")Password
+            input.form-control(type="password",name='password')
+        .form-group
+            label(for="firstName")First Name
+            input.form-control(type="text",name='firstName')
+        .form-group
+            label(for="lastName")Last Name
+            input.form-control(type="text",name='lastName')
+
+        button.btn.btn-primary(type="submit")Register

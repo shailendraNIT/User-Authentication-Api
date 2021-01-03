@@ -1,0 +1,52 @@
+
+//- ye ek layout type hai ..isko extend krke hum login ,reset vgaireh ka code likhenge
+
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title title
+
+        link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
+        script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
+        script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
+
+    body
+        .navbar.navbar-inverse.navbar-static-top(role='navigation')
+            .container
+                .navbar-header
+                    button.navbar-toggle(type='button',data-toggle='collapse',data-target='.navbar-collapse')
+                        span.sr-only Toggle navigation
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a.navbar-brand(href="/")User Aunthentication
+                    .collapse.navbar-collapse
+                        ul.nav.navbar-nav
+                            li.active
+                                a(href="/api/auth")Home
+                            if user
+                                li
+                                    a(href="/api/auth/logout")logout
+                            else
+                                li
+                                    a(href="/api/auth/login")Login
+
+                                li
+                                    a(href="/api/auth/register")register
+
+        .container
+            if message.error 
+                .alert.alert-danger
+                    div=message.error
+
+            if message.info
+                .alert.alert-info
+                    div=message.info
+
+            if message.success
+                .alert.alert-success
+                    div=message.success
+
+            block content
