@@ -11,13 +11,22 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.0",
     "bcrypt": "^5.0.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-flash": "0.0.2",
+    "express-session": "^1.17.1",
+    "express-validator": "^6.9.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.9",
     "nodemon": "^2.0.6",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "pug": "^3.0.0"
+    "pug": "^3.0.0",
+    "req-flash": "0.0.3"
   }
 }

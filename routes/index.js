@@ -17,8 +17,6 @@ module.exports = (app)=>{
     
 
     //handles all /api/user paths
-    app.use("/api/user", authenticate, user);
-
-    
+    app.use("/api/user",authenticate,user);
 
 }

@@ -1,4 +1,8 @@
 const mongoose=require('mongoose');
+const bcrypt=require('bcrypt');
+const jwt=require('jsonwebtoken');
+const crypto=require('crypto');
+const Token=require('../models/token')
 
 const UserSchema=new mongoose.Schema({
     email:{
@@ -47,7 +51,7 @@ const UserSchema=new mongoose.Schema({
 },
 {timestamps:true});
 
-UserSchema.pre('save',(next)=>{
+UserSchema.pre('save',function(next){  //keep in mind arrow function can't be used here because it does not bind
     const user=this;
     if(!user.isModified('password'))return next();
 

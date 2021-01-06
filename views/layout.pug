@@ -4,14 +4,10 @@
 <!DOCTYPE html>
 html(lang="en")
     head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title title
-
         link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
         script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
         script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
-
     body
         .navbar.navbar-inverse.navbar-static-top(role='navigation')
             .container
@@ -21,32 +17,29 @@ html(lang="en")
                         span.icon-bar
                         span.icon-bar
                         span.icon-bar
-                    a.navbar-brand(href="/")User Aunthentication
+                    a.navbar-brand(href="/") User Aunthentication
                     .collapse.navbar-collapse
                         ul.nav.navbar-nav
                             li.active
-                                a(href="/api/auth")Home
+                                a(href="/api/auth")  Home
                             if user
                                 li
-                                    a(href="/api/auth/logout")logout
+                                    a(href="/api/auth/logout") logout
                             else
                                 li
-                                    a(href="/api/auth/login")Login
+                                    a(href="/api/auth/login") Login
 
                                 li
-                                    a(href="/api/auth/register")register
+                                    a(href="/api/auth/register") register
+        //- .container
+        //-     if messages.error
+        //-         .alert.alert-danger
+        //-             div=messages.error
+        //-     if messages.info
+        //-         .alert.alert-info
+        //-             div=messages.info
+        //-     if messages.success
+        //-         .alert.alert-success
+        //-             div=messages.success
 
-        .container
-            if message.error 
-                .alert.alert-danger
-                    div=message.error
-
-            if message.info
-                .alert.alert-info
-                    div=message.info
-
-            if message.success
-                .alert.alert-success
-                    div=message.success
-
-            block content
+        block content

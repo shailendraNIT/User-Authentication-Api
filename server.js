@@ -1,16 +1,26 @@
 require('dotenv').config();
 const express=require('express');
+const routes=require('./routes/index') //index jake sbko route krega auth ko b aur user endpoint ko b
 const mongoose=require('mongoose');
 const passport = require('passport');
+var session = require("express-session");
+var cookieParser = require("cookie-parser");
+var flash        = require('express-flash')
+const cors = require("cors");
 
 
-console.log('8');
+
 
 
 const port=process.env.PORT || 3000;
 const connUri=process.env.MONGO_LOCAL_CONN_URL ;
 
+
+
+
 const app=express();
+
+app.use(cors());
 
 
 
@@ -18,7 +28,18 @@ const app=express();
 app.use(express.json()); //parsing application/json
 app.use(express.urlencoded({extended:false})); //parsing application/xwww
 
-console.log('22');
+app.use(flash());
+app.use(cookieParser());
+
+app.use(
+    session({
+      secret: "secret key",
+      resave: true,
+      saveUninitialized: true,
+    })
+);
+
+
 
 app.set('view engine','pug');
 
@@ -26,7 +47,11 @@ app.set('view engine','pug');
 //database connection
 
 //mongoose.promise=global.promise  only  useful in mongoose verson 4
-mongoose.connect(connUri,{useNewUrlParser:true,useCreateIndex:true,useUnifiedTopology:true})
+
+async function connectdb(){
+    await mongoose.connect(connUri,{useNewUrlParser:true,useCreateIndex:true,useUnifiedTopology:true});
+}
+connectdb();
 
 mongoose.connection.once('open',()=>{
     console.log(`MongoDB --database connection established successfully`)
@@ -47,8 +72,8 @@ app.use(passport.initialize());
 require('./middlewares/jwt')(passport);
 
 
-console.log('51');
-require('./routes/index')(app);
+
+routes(app);
 
 
 app.listen(port,()=>{

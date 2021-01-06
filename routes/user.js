@@ -8,6 +8,6 @@ router.get('/',(req,res)=>{
     res.send('mai user hu bhai');
 })
 
-console.log('user 10')
+
 
 module.exports=router;
