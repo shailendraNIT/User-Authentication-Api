@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    form(method='POST')
+        Legend Verify Email
+        .form-group
+            label(for='email') Email
+            input.form-control(type='text',name='email',autofocus=true)
+        button.btn.btn-primary(type='submit') Send Verification Link

@@ -18,10 +18,13 @@ exports.register = async (req, res) => {
         }
 
         const newUser = new User({ ...req.body, role: 'basic' }) //role based access -control
-
+        console.log('21');
         const user_ = await newUser.save();
+        console.log('23');
+
 
         await sendVerificationEmail(user_, req, res);
+        console.log('27');
     } catch (error) {
         req.flash('error', `${JSON.stringify(error)}`);
 

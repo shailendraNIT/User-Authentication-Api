@@ -51,11 +51,11 @@ const UserSchema=new mongoose.Schema({
 },
 {timestamps:true});
 
-UserSchema.pre('save',function(next){  //keep in mind arrow function can't be used here because it does not bind
+UserSchema.pre("save",function(next){  //keep in mind arrow function can't be used here because it does not bind
     const user=this;
     if(!user.isModified('password'))return next();
 
-    bcrypt.genSalt(10,(err,salt)=>{
+    bcrypt.genSalt(10,function(err,salt){
 
         if(err)return next(err);
 
@@ -66,17 +66,17 @@ UserSchema.pre('save',function(next){  //keep in mind arrow function can't be us
     })
 })
 
-UserSchema.methods.comparePassword=(password)=>{
+UserSchema.methods.comparePassword=function(password){
     return bcrypt.compareSync(password,this.password);
 }
 
-UserSchema.methods.generateJWT=()=>{
+UserSchema.methods.generateJWT=function(){
     const today=new Date();
     const expirationDate=new Date(today);
     expirationDate.setDate(today.getDate()+60);
 
     let payload={
-        id:this.id,
+        id:this._id,
         email:this.email,
         username:this.username,
         firstName:this.firstName,
@@ -87,7 +87,7 @@ UserSchema.methods.generateJWT=()=>{
 
 }
 
-UserSchema.methods.generateVerificationToken=()=>{
+UserSchema.methods.generateVerificationToken=function(){
     let payload={
         userId:this._id,
         token: crypto.randomBytes(20).toString('hex')
