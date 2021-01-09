@@ -19,7 +19,11 @@ exports.register = async (req, res) => {
 
         const newUser = new User({ ...req.body, role: 'basic' }) //role based access -control
         console.log('21');
-        const user_ = await newUser.save();
+        const user_ = await newUser.save(function(err,news){
+            if(err)console.log('err',err);
+            if(news)console.log('news',news);
+            
+        });
         console.log('23');
 
 
@@ -37,7 +41,7 @@ exports.register = async (req, res) => {
 exports.login=async(req,res)=>{
     try{
         const {email,password}=req.body;
-        const user=await User.findOne({emil});
+        const user=await User.findOne({email});
 
         if(!user){
             req.flash('error',"User doesn't exists.Please register first");
@@ -63,6 +67,7 @@ exports.login=async(req,res)=>{
         
 
     }catch(err){
+        console.log(err);
         res.status(500).json({message:err.message});
     }
 }
@@ -139,9 +144,10 @@ exports.resendToken = async (req, res) => {
         );
         return res.redirect("/api/auth/login");
       }
-  
+      console.log('sending email from Auth.js')
       await sendVerificationEmail(user, req, res);
     } catch (error) {
+        console.log(error);
       res.status(500).json({ message: error.message });
     }
   };
@@ -151,22 +157,30 @@ exports.resendToken = async (req, res) => {
 
 
 async function sendVerificationEmail(user, req, res) {
+    console.log('in sendverificationEmail');
     try {
-        const token = user.generateVerifictionToken();
+        const token = user.generateVerificationToken();
+        console.log('token generated');
 
-        await token.save();
+
+        await token.save((err,news)=>{
+            if(err)console.log(err);
+            if(news)console.log(news);
+        });
+
 
         let subject = "Account Verification Email";
 
         let to = user.email
-        let from = process.env.FROM_EMAIL;
+        //let from = process.env.FROM_EMAIL;
+        let user_name=user.username;
 
         let link = `http://${req.headers.host}api/auth/verify/${token.token}`;
 
-        let html = `<p>Hi ${user.username}<p><br><p>Please click on the following <a href="${link}">link</a> to verify your account.</p> 
-                  <br><p>If you did not request this, please ignore this email.</p>`;
+        // let html = `<p>Hi ${user.username}<p><br><p>Please click on the following <a href="${link}">link</a> to verify your account.</p> 
+        //           <br><p>If you did not request this, please ignore this email.</p>`;
 
-        await sendEmail({to,from,subject,html});
+        await sendEmail({user_name,link,to,});
 
         req.flash('info',"A verification email has been sent to " +
         user.email +
@@ -176,6 +190,7 @@ async function sendVerificationEmail(user, req, res) {
         
     }
     catch(err){
+        console.log('error generated in sending mail',err);
         res.status(500).json({message:err});
     }
 }
