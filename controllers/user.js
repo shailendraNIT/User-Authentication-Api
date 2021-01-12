@@ -43,12 +43,16 @@ exports.update=async function(req,res){
         const userId=req.user._id;
 
         //Make sure the passed id is that of the logged in user
-        if(userId.toString()!=id.toString){
+        if(userId.toString()!=id.toString()){
             return res.status(401).json({messsage:"Sorry,you don't have the permision to update this data"});
         }
 
 
-        const user=await User.findByIdAndUpdate(id,{$set:update},{new:true});
+        const user = await User.findByIdAndUpdate(
+            id,
+            { $set: update },
+            { new: true }
+        );
 
 
         //if there is no image, return success message

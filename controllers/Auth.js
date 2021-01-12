@@ -1,5 +1,5 @@
 const User = require('../models/user')
-const token = require('../models/token')
+const Token = require('../models/token')
 const sendEmail = require('../utils/sendmail');
 
 
@@ -18,17 +18,11 @@ exports.register = async (req, res) => {
         }
 
         const newUser = new User({ ...req.body, role: 'basic' }) //role based access -control
-        console.log('21');
-        const user_ = await newUser.save(function(err,news){
-            if(err)console.log('err',err);
-            if(news)console.log('news',news);
-            
-        });
-        console.log('23');
-
-
-        await sendVerificationEmail(user_, req, res);
-        console.log('27');
+        
+        await newUser.save();
+        
+        await sendVerificationEmail(newUser, req, res);
+        
     } catch (error) {
         req.flash('error', `${JSON.stringify(error)}`);
 
@@ -75,6 +69,7 @@ exports.login=async(req,res)=>{
 //=== email verification
 //routes GET api/verify/:token
 exports.verify=async(req,res)=>{
+    
     if(!req.params.token){
         req.flash('error','We are unable to find a user for this token');
         return res.status(400).redirect('back');
@@ -82,18 +77,20 @@ exports.verify=async(req,res)=>{
 
     try{
 
-        const token=await token.findOne({token:req.params.token});
-
+        const token=await Token.findOne({token:req.params.token});
+        
         if(!token){
             req.flash('error','We are unable to find a valid token.Your token may have expired');
             return res.status(400).redirect('back');
         }
+        
 
         User.findOne({_id:token.userId},(err,user)=>{
             if(!user){
                 req.flash('error','we are unable to find a user for this token');
                 return res.status(400).redirect('back');
             }
+            console.log('user found')
 
             if(user.isVerified){
                 req.flash('error','This user has already been verified')
@@ -157,30 +154,21 @@ exports.resendToken = async (req, res) => {
 
 
 async function sendVerificationEmail(user, req, res) {
-    console.log('in sendverificationEmail');
+    
     try {
+        
         const token = user.generateVerificationToken();
-        console.log('token generated');
+        
+        await token.save();
+        
+        let subject = "Account Verification Token";
+        let to = user.email;
+        let from = process.env.FROM_EMAIL;
+        let link = "http://" + req.headers.host + "/api/auth/verify/" + token.token;
+        let html = `<p>Hi ${user.username}<p><br><p>Please click on the following <a href="${link}">link</a> to verify your account.</p> 
+        <br><p>If you did not request this, please ignore this email.</p>`;
 
-
-        await token.save((err,news)=>{
-            if(err)console.log(err);
-            if(news)console.log(news);
-        });
-
-
-        let subject = "Account Verification Email";
-
-        let to = user.email
-        //let from = process.env.FROM_EMAIL;
-        let user_name=user.username;
-
-        let link = `http://${req.headers.host}api/auth/verify/${token.token}`;
-
-        // let html = `<p>Hi ${user.username}<p><br><p>Please click on the following <a href="${link}">link</a> to verify your account.</p> 
-        //           <br><p>If you did not request this, please ignore this email.</p>`;
-
-        await sendEmail({user_name,link,to,});
+        await sendEmail({ to, from, subject, html });
 
         req.flash('info',"A verification email has been sent to " +
         user.email +
@@ -190,7 +178,7 @@ async function sendVerificationEmail(user, req, res) {
         
     }
     catch(err){
-        console.log('error generated in sending mail',err);
+        console.log(err);
         res.status(500).json({message:err});
     }
 }

@@ -1,21 +1,18 @@
-const emailJS=require('emailjs-com')
+const sgMail = require("@sendgrid/mail");
 
-const service_id=process.env.SERVICE_ID;
-const template_id=process.env.TEMPLATE_ID;
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-
-function sendEmail(templateParams){
-    return new Promise((resolve,reject)=>{
-        emailJS.send(service_id,template_id,templateParams,(error,result)=>{
-            if(error){
-                console.log(error);
-                return reject(error);
-            }
-            console.log('mail sent');
-
-            return resolve(result);
-        })
-    })
+function sendEmail(mailOptions) {
+  return new Promise((resolve, reject) => {
+    sgMail.send(mailOptions, (error, result) => {
+      if (error){
+        console.log('sendgrid error',error);
+        return reject(error);
+      } 
+      console.log('in sending queue...');
+      return resolve(result);
+    });
+  });
 }
 
-module.exports=sendEmail;
+module.exports = sendEmail;

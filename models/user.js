@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-
 const Token = require("../models/token");
 
 const UserSchema = new mongoose.Schema(
@@ -107,12 +106,15 @@ UserSchema.methods.generatePasswordReset = function () {
 };
 
 UserSchema.methods.generateVerificationToken = function () {
-  let payload = {
+  try{let payload = {
     userId: this._id,
     token: crypto.randomBytes(20).toString("hex"),
   };
 
-  return new Token(payload);
+  return  new Token(payload);}
+  catch(err){
+      console.log(err);
+  }
 };
 
 module.exports = mongoose.model("Users", UserSchema);
